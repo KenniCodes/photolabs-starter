@@ -1,24 +1,25 @@
 import React from "react";
+
 import PhotoFavButton from "./PhotoFavButton";
 import "../styles/PhotoListItem.scss";
 
-const PhotoListItem = (props) => {
+const PhotoListItem = ({ sample }) => {
   return (
-    <div className="photo-list__item">
-      <PhotoFavButton/>
-      <img className="photo-list__image" id={props.sample.id} src={props.sample.imageSource} />
+    <li className="photo-list__item">
+      <PhotoFavButton />
+      <img className="photo-list__image" src={sample.urls.regular} />
       <div className="photo-list__user-details">
-        <img className="photo-list__user-profile" src={props.sample.profile} />
+        <img className="photo-list__user-profile" alt={`${sample.user.username}'s photo`} src={sample.user.profile} />
         <div className="photo-list__user-info">
           <span>
-            {props.sample.username}
+            {sample.user.name}
           </span>
           <p className="photo-list__user-location">
-            {props.sample.location.city}, {props.sample.location.country}
+            {sample.location.city}, {sample.location.country}
           </p>
         </div>
       </div>
-    </div>
+    </li>
   );
 };
 
