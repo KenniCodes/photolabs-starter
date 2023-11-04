@@ -3,7 +3,9 @@ import React from 'react';
 import '../styles/PhotoDetailsModal.scss'
 import closeSymbol from '../assets/closeSymbol.svg';
 
-const PhotoDetailsModal = () => {
+const PhotoDetailsModal = ({ isOpen }) => {
+  if (!isOpen) return null;
+  
   return (
     <div className="photo-details-modal">
       <button className="photo-details-modal__close-button">
