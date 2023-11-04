@@ -7,7 +7,7 @@ const PhotoListItem = ({ sample, photoId, onToggleFavourite, isFavourite, onSele
   return (
     <li className="photo-list__item">
       <PhotoFavButton photoId={photoId} onToggleFavourite={onToggleFavourite} isFavourite={isFavourite}/>
-      <img className="photo-list__image" src={sample.urls.regular} onClick={onSelectedPhoto} />
+      <img className="photo-list__image" src={sample.urls.regular} onClick={() => onSelectedPhoto(sample)} />
       <div className="photo-list__user-details">
         <img className="photo-list__user-profile" alt={`${sample.user.username}'s photo`} src={sample.user.profile} />
         <div className="photo-list__user-info">

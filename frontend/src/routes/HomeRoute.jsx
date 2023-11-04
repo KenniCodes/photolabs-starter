@@ -7,15 +7,18 @@ import PhotoDetailsModal from './PhotoDetailsModal';
 
 const HomeRoute = () => {
   const [favouritePhotos, setFavouritePhotos] = useState([]);
-
+  const [clickedPhoto, setClickedPhoto] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const openModal = () => {
+  const openModal = (photo) => {
+    console.log(photo);
     setIsModalOpen(true);
+    setClickedPhoto(photo);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
+    setClickedPhoto(null);
   };
 
   const toggleFavourite = useCallback((photoId) => {
@@ -30,7 +33,7 @@ const HomeRoute = () => {
     <div className="home-route">
       <TopNavigation isFavPhotoExist={favouritePhotos.length > 0}/>
       <PhotoList onToggleFavourite={toggleFavourite} favouritePhotos={favouritePhotos} onSelectedPhoto={openModal} />
-      <PhotoDetailsModal isOpen={isModalOpen} closeModal={closeModal}/>
+      <PhotoDetailsModal isOpen={isModalOpen} closeModal={closeModal} photo={clickedPhoto}/>
     </div>
   );
 };
