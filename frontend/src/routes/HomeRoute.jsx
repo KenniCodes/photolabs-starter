@@ -11,7 +11,6 @@ const HomeRoute = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = (photo) => {
-    console.log(photo);
     setIsModalOpen(true);
     setClickedPhoto(photo);
   };
@@ -33,7 +32,7 @@ const HomeRoute = () => {
     <div className="home-route">
       <TopNavigation isFavPhotoExist={favouritePhotos.length > 0}/>
       <PhotoList onToggleFavourite={toggleFavourite} favouritePhotos={favouritePhotos} onSelectedPhoto={openModal} />
-      <PhotoDetailsModal isOpen={isModalOpen} closeModal={closeModal} photo={clickedPhoto}/>
+      <PhotoDetailsModal isOpen={isModalOpen} closeModal={closeModal} photo={clickedPhoto} onToggleFavourite={toggleFavourite} favouritePhotos={favouritePhotos} />
     </div>
   );
 };
