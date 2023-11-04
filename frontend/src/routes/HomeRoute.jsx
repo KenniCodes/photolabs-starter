@@ -14,6 +14,10 @@ const HomeRoute = () => {
     setIsModalOpen(true);
   };
 
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   const toggleFavourite = useCallback((photoId) => {
     setFavouritePhotos(prevFavourites => {
       return prevFavourites.includes(photoId)
@@ -26,7 +30,7 @@ const HomeRoute = () => {
     <div className="home-route">
       <TopNavigation isFavPhotoExist={favouritePhotos.length > 0}/>
       <PhotoList onToggleFavourite={toggleFavourite} favouritePhotos={favouritePhotos} onSelectedPhoto={openModal} />
-      <PhotoDetailsModal isOpen={isModalOpen} />
+      <PhotoDetailsModal isOpen={isModalOpen} closeModal={closeModal}/>
     </div>
   );
 };

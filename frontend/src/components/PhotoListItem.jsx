@@ -5,9 +5,9 @@ import "../styles/PhotoListItem.scss";
 
 const PhotoListItem = ({ sample, photoId, onToggleFavourite, isFavourite, onSelectedPhoto }) => {
   return (
-    <li className="photo-list__item" onClick={onSelectedPhoto}>
+    <li className="photo-list__item">
       <PhotoFavButton photoId={photoId} onToggleFavourite={onToggleFavourite} isFavourite={isFavourite}/>
-      <img className="photo-list__image" src={sample.urls.regular} />
+      <img className="photo-list__image" src={sample.urls.regular} onClick={onSelectedPhoto} />
       <div className="photo-list__user-details">
         <img className="photo-list__user-profile" alt={`${sample.user.username}'s photo`} src={sample.user.profile} />
         <div className="photo-list__user-info">
