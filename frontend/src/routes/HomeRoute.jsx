@@ -1,32 +1,21 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 
 import '../styles/HomeRoute.scss';
 import TopNavigation from 'components/TopNavigationBar';
 import PhotoList from 'components/PhotoList';
 import PhotoDetailsModal from './PhotoDetailsModal';
+import useApplicationData from 'hooks/useApplicationData';
+
 
 const HomeRoute = () => {
-  const [favouritePhotos, setFavouritePhotos] = useState([]);
-  const [clickedPhoto, setClickedPhoto] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const openModal = (photo) => {
-    setIsModalOpen(true);
-    setClickedPhoto(photo);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setClickedPhoto(null);
-  };
-
-  const toggleFavourite = useCallback((photoId) => {
-    setFavouritePhotos(prevFavourites => {
-      return prevFavourites.includes(photoId)
-        ? prevFavourites.filter(id => id !== photoId)
-        : [...prevFavourites, photoId];
-    });
-  }, []);
+  const {
+    isModalOpen,
+    favouritePhotos,
+    clickedPhoto,
+    openModal,
+    closeModal,
+    toggleFavourite
+  } = useApplicationData();
 
   return (
     <div className="home-route">

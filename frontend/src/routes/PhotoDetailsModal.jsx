@@ -8,17 +8,6 @@ import PhotoListItem from 'components/PhotoListItem';
 const PhotoDetailsModal = ({ isOpen, closeModal, photo, onToggleFavourite, favouritePhotos }) => {
   if (!isOpen) return null;
 
-  const renderSimilarPhotos = (similarPhotos) => {
-    return Object.values(similarPhotos).map((similarPhoto, index) => {
-      <img
-        key={index}
-        src={similarPhoto.urls.regular}
-        alt={`Similar to ${photo.location.city}`}
-        className='photo-details-modal__image'
-      />
-    });
-  };
-
   return (
     <div className="photo-details-modal">
       <button className="photo-details-modal__close-button" onClick={closeModal}>
