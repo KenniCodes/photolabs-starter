@@ -1,15 +1,20 @@
-import { useReducer, useCallback } from 'react';
+import { useReducer, useCallback, useEffect } from 'react';
+import axios from 'axios';
 
 const initialState = {
   favouritePhotos: [],
   clickedPhoto: null,
   isModalOpen: false,
+  photoData: [],
+  topicData: []
 };
 
 export const ACTIONS = {
   TOGGLE_FAVOURITE: 'TOGGLE_FAVOURITE',
   SELECT_PHOTO: 'SELECT_PHOTO',
   CLOSE_MODAL: 'CLOSE_MODAL',
+  SET_PHOTO_DATA: 'SET_PHOTO_DATA',
+  SET_TOPIC_DATA: 'SET_TOPIC_DATA,'
 };
 
 function reducer(state, action) {
@@ -33,6 +38,16 @@ function reducer(state, action) {
         clickedPhoto: null,
         isModalOpen: false,
       };
+      case ACTIONS.SET_PHOTO_DATA:
+        return { 
+          ...state, 
+          photoData: action.payload
+        };
+      case ACTIONS.SET_TOPIC_DATA:
+        return {
+          ...state, 
+          topicData: action.payload
+        };
     default:
       throw new Error(`Unhandled action type: ${action.type}`);
   }
@@ -53,10 +68,28 @@ const useApplicationData = () => {
     dispatch({ type: ACTIONS.TOGGLE_FAVOURITE, payload: photoId });
   }, []);
 
+  useEffect(() => {
+    axios.get("/api/photos")
+    .then((response) => dispatch({ type: ACTIONS.SET_PHOTO_DATA, payload: response.data }))
+    .catch((error) => {
+      console.error("Error fetching photos:", error);
+    });
+}, []);
+
+  useEffect(() => {
+    axios.get("/api/topics")
+    .then((response) => dispatch({ type: ACTIONS.SET_TOPIC_DATA, payload: response.data}))
+    .catch((error) => {
+      console.error("Error fetching topics:", error);
+    });
+  }, []);
+  
   return {
     isModalOpen: state.isModalOpen,
     favouritePhotos: state.favouritePhotos,
     clickedPhoto: state.clickedPhoto,
+    photoData: state.photoData,
+    topicData: state.topicData,
     openModal,
     closeModal,
     toggleFavourite
