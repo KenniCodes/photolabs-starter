@@ -84,12 +84,24 @@ const useApplicationData = () => {
     });
   }, []);
   
+  const fetchPhotosByTopic = useCallback((topicId) => {
+    axios.get(`/api/topics/photos/${topicId}`)
+      .then((response) => {
+        dispatch({ type: ACTIONS.SET_PHOTO_DATA, payload: response.data });
+      })
+      .catch((error) => {
+        console.error(`Error fetching photos for topic ${topicId}:`, error);
+      });
+  }, []);
+  
+
   return {
     isModalOpen: state.isModalOpen,
     favouritePhotos: state.favouritePhotos,
     clickedPhoto: state.clickedPhoto,
     photoData: state.photoData,
     topicData: state.topicData,
+    fetchPhotosByTopic,
     openModal,
     closeModal,
     toggleFavourite

@@ -14,6 +14,7 @@ const HomeRoute = () => {
     clickedPhoto,
     photoData,
     topicData,
+    fetchPhotosByTopic,
     openModal,
     closeModal,
     toggleFavourite
@@ -21,7 +22,7 @@ const HomeRoute = () => {
 
   return (
     <div className="home-route">
-      <TopNavigation isFavPhotoExist={favouritePhotos.length > 0} topic={topicData} />
+      <TopNavigation isFavPhotoExist={favouritePhotos.length > 0} topic={topicData} fetchPhotosByTopic={fetchPhotosByTopic} />
       <PhotoList onToggleFavourite={toggleFavourite} favouritePhotos={favouritePhotos} onSelectedPhoto={openModal} photo={photoData} />
       <PhotoDetailsModal isOpen={isModalOpen} closeModal={closeModal} photo={clickedPhoto} onToggleFavourite={toggleFavourite} favouritePhotos={favouritePhotos} />
     </div>
