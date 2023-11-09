@@ -6,6 +6,7 @@ The PhotoLabs project for the Web Development React course programming.
 ## Setup
 
 Install dependencies with `npm install` in each respective `/frontend` and `/backend`.
+Note that both frontend and backend will have to be run in order for App to render appropriate data from the mock database.
 
 ## [Frontend] Running Webpack Development Server
 

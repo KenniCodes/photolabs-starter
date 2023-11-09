@@ -8,6 +8,7 @@ import useApplicationData from 'hooks/useApplicationData';
 
 
 const HomeRoute = () => {
+  // importing hooks via single hook 'useApplicationData' 
   const {
     isModalOpen,
     favouritePhotos,
@@ -15,6 +16,7 @@ const HomeRoute = () => {
     photoData,
     topicData,
     fetchPhotosByTopic,
+    fetchSimilarPhotos,
     openModal,
     closeModal,
     toggleFavourite
@@ -22,9 +24,10 @@ const HomeRoute = () => {
 
   return (
     <div className="home-route">
+      {/* if any photos exist in favourite photos array then display favourite photos state is passed in */}
       <TopNavigation isFavPhotoExist={favouritePhotos.length > 0} topic={topicData} fetchPhotosByTopic={fetchPhotosByTopic} />
       <PhotoList onToggleFavourite={toggleFavourite} favouritePhotos={favouritePhotos} onSelectedPhoto={openModal} photo={photoData} />
-      <PhotoDetailsModal isOpen={isModalOpen} closeModal={closeModal} photo={clickedPhoto} onToggleFavourite={toggleFavourite} favouritePhotos={favouritePhotos} />
+      <PhotoDetailsModal isOpen={isModalOpen} closeModal={closeModal} photo={clickedPhoto} onToggleFavourite={toggleFavourite} favouritePhotos={favouritePhotos} fetchSimilarPhotos={fetchSimilarPhotos} />
     </div>
   );
 };

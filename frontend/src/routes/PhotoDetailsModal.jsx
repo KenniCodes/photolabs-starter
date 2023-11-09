@@ -5,7 +5,8 @@ import closeSymbol from '../assets/closeSymbol.svg';
 import PhotoFavButton from 'components/PhotoFavButton';
 import PhotoListItem from 'components/PhotoListItem';
 
-const PhotoDetailsModal = ({ isOpen, closeModal, photo, onToggleFavourite, favouritePhotos }) => {
+const PhotoDetailsModal = ({ isOpen, closeModal, photo, onToggleFavourite, favouritePhotos, fetchSimilarPhotos }) => {
+  // if modal is already open then modal will not re-render
   if (!isOpen) return null;
 
   return (
@@ -30,14 +31,6 @@ const PhotoDetailsModal = ({ isOpen, closeModal, photo, onToggleFavourite, favou
         <h2>Similar Photos</h2>
       <PhotoListItem key={photo.id} sample={photo} photoId={photo.id} onToggleFavourite={onToggleFavourite} isFavourite={favouritePhotos.includes(photo.id)} />
       </div>
-
-
-
-
-
-
-
-
     </div>
   )
 };
