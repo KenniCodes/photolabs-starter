@@ -3,6 +3,10 @@ The PhotoLabs project for the Web Development React course programming.
 
 # Photolabs
 
+!["Screenshot of Animals category plus favourite selection notification"](/docs/PhotoLabs-AnimalsTab.png)
+
+!["Screenshot of Travel category plus favourite selection notification"](/docs/PhotoLabs-TravelTab.png)
+
 ## Setup
 
 Install dependencies with `npm install` in each respective `/frontend` and `/backend`.
