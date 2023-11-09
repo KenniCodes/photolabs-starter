@@ -8,6 +8,7 @@ const initialState = {
   photoData: [],
   topicData: [],
   similarPhotosData: [],
+  theme: "light",
 };
 
 export const ACTIONS = {
@@ -17,6 +18,7 @@ export const ACTIONS = {
   SET_PHOTO_DATA: 'SET_PHOTO_DATA',
   SET_TOPIC_DATA: 'SET_TOPIC_DATA,',
   SET_SIMILAR_PHOTOS: 'SET_SIMILAR_PHOTOS_DATA',
+  SET_THEME: 'SET_THEME',
 };
 // modifies state based on an action, in these cases state updates based on data from each respective database request or based on what element is clicked
 function reducer(state, action) {
@@ -55,7 +57,12 @@ function reducer(state, action) {
         ...state,
         similarPhotos: action.payload
       };
-// in case of error when unexpected action is handled
+    case ACTIONS.SET_THEME:
+      return {
+        ...state,
+        theme: action.payload,
+      };
+    // in case of error when unexpected action is handled
     default:
       throw new Error(`Unhandled action type: ${action.type}`);
   }
@@ -75,7 +82,17 @@ const useApplicationData = () => {
   const toggleFavourite = useCallback((photoId) => {
     dispatch({ type: ACTIONS.TOGGLE_FAVOURITE, payload: photoId });
   }, []);
-// fetch requests sent to backend database using axios module
+
+  const setTheme = useCallback((theme) => {
+    dispatch({ type: ACTIONS.SET_THEME, payload: theme });
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    const newTheme = state.theme === "light" ? "dark" : "light";
+    dispatch({ type: ACTIONS.SET_THEME, payload: newTheme });
+  }, [state.theme]);
+
+  // fetch requests sent to backend database using axios module
   useEffect(() => {
     axios.get("/api/photos")
       .then((response) => dispatch({ type: ACTIONS.SET_PHOTO_DATA, payload: response.data }))
@@ -111,13 +128,16 @@ const useApplicationData = () => {
         console.error(`Error fetching similar photos for photo ${photoId}:`, error);
       });
   }, []);
-// exporting states and hooks
+  // exporting states and hooks
   return {
     isModalOpen: state.isModalOpen,
     favouritePhotos: state.favouritePhotos,
     clickedPhoto: state.clickedPhoto,
     photoData: state.photoData,
     topicData: state.topicData,
+    theme: state.theme,
+    setTheme,
+    toggleTheme,
     fetchPhotosByTopic,
     fetchSimilarPhotos,
     openModal,
