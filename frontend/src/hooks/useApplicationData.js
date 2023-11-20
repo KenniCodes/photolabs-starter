@@ -1,129 +1,92 @@
-import { useReducer, useCallback, useEffect } from 'react';
-import axios from 'axios';
-// set default states
-const initialState = {
-  favouritePhotos: [],
-  clickedPhoto: null,
-  isModalOpen: false,
-  photoData: [],
-  topicData: [],
-  similarPhotosData: [],
-};
+import { useReducer, useEffect, useState } from "react";
+import axios from "axios";
 
-export const ACTIONS = {
-  TOGGLE_FAVOURITE: 'TOGGLE_FAVOURITE',
-  SELECT_PHOTO: 'SELECT_PHOTO',
-  CLOSE_MODAL: 'CLOSE_MODAL',
-  SET_PHOTO_DATA: 'SET_PHOTO_DATA',
-  SET_TOPIC_DATA: 'SET_TOPIC_DATA,',
-  SET_SIMILAR_PHOTOS: 'SET_SIMILAR_PHOTOS_DATA',
+const ACTIONS = {
+  FAVOURITE_PHOTO_TOGGLE: 'toggleFavourite',
+  SET_MODAL: 'setModal',
+  SET_PHOTOS: 'setPhotos',
+  SET_TOPICS: 'setTopics'
 };
-// modifies state based on an action, in these cases state updates based on data from each respective database request or based on what element is clicked
-function reducer(state, action) {
-  switch (action.type) {
-    case ACTIONS.TOGGLE_FAVOURITE:
-      return {
-        ...state,
-        favouritePhotos: state.favouritePhotos.includes(action.payload)
-          ? state.favouritePhotos.filter(id => id !== action.payload)
-          : [...state.favouritePhotos, action.payload],
-      };
-    case ACTIONS.SELECT_PHOTO:
-      return {
-        ...state,
-        clickedPhoto: action.payload,
-        isModalOpen: true,
-      };
-    case ACTIONS.CLOSE_MODAL:
-      return {
-        ...state,
-        clickedPhoto: null,
-        isModalOpen: false,
-      };
-    case ACTIONS.SET_PHOTO_DATA:
-      return {
-        ...state,
-        photoData: action.payload
-      };
-    case ACTIONS.SET_TOPIC_DATA:
-      return {
-        ...state,
-        topicData: action.payload
-      };
-    case ACTIONS.SET_SIMILAR_PHOTOS:
-      return {
-        ...state,
-        similarPhotos: action.payload
-      };
-// in case of error when unexpected action is handled
-    default:
-      throw new Error(`Unhandled action type: ${action.type}`);
+// hook to set state data
+const reducer = (state, { type, params }) => {
+  const actions = {};
+  
+  actions[ACTIONS.FAVOURITE_PHOTO_TOGGLE] = id => {
+    const stateCopy = { ...state };
+    if (state.favourites.includes(id)) {
+      const updatedFavourites = stateCopy.favourites.filter(state => state !== id);
+      stateCopy.favourites = updatedFavourites;
+      return stateCopy;
+    }
+    stateCopy.favourites = stateCopy.favourites.concat(id);
+    return stateCopy;
+  };
+
+  actions[ACTIONS.SET_MODAL] = appData => {
+    return { ...state, modal: appData };
+  };
+  
+  actions[ACTIONS.SET_PHOTOS] = photos => {
+    return { ...state, photosArray: [...photos] };
+  };
+
+  actions[ACTIONS.SET_TOPICS] = topics => {
+    return { ...state, topicsArray: [...topics] };
+  };
+
+  const actType = actions[type];
+  if (!actType) {
+    throw new Error(`Action type ${type} is invalid`);
   }
-}
-// refactor all hooks and states to this singular hook
+
+  return actType(params);
+};
+// initialize all states and axios calls
+const initialState = {
+  favourites: [],
+  modal: null,
+  photosArray: [],
+  topicsArray: []
+};
+// hook to hold axios calls + states
 const useApplicationData = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const openModal = useCallback((photo) => {
-    dispatch({ type: ACTIONS.SELECT_PHOTO, payload: photo });
-  }, []);
-
-  const closeModal = useCallback(() => {
-    dispatch({ type: ACTIONS.CLOSE_MODAL });
-  }, []);
-
-  const toggleFavourite = useCallback((photoId) => {
-    dispatch({ type: ACTIONS.TOGGLE_FAVOURITE, payload: photoId });
-  }, []);
-// fetch requests sent to backend database using axios module
+  const [topicId, setTopicId] = useState(0);
+// promise to return all data or error if any data fetch fails
   useEffect(() => {
-    axios.get("/api/photos")
-      .then((response) => dispatch({ type: ACTIONS.SET_PHOTO_DATA, payload: response.data }))
-      .catch((error) => {
-        console.error("Error fetching photos:", error);
-      });
-  }, []);
-
-  useEffect(() => {
-    axios.get("/api/topics")
-      .then((response) => dispatch({ type: ACTIONS.SET_TOPIC_DATA, payload: response.data }))
-      .catch((error) => {
-        console.error("Error fetching topics:", error);
-      });
-  }, []);
-
-  const fetchPhotosByTopic = useCallback((topicId) => {
-    axios.get(`/api/topics/photos/${topicId}`)
-      .then((response) => {
-        dispatch({ type: ACTIONS.SET_PHOTO_DATA, payload: response.data });
+    const fetchTopics = axios.get('api/topics');
+    const fetchPhotos = topicId === 0 ? axios.get('/api/photos') : axios.get(`api/topics/photos/${topicId}`);
+  
+    Promise.all([fetchTopics, fetchPhotos])
+      .then(([topicsResponse, photosResponse]) => {
+        dispatch({ type: ACTIONS.SET_TOPICS, params: topicsResponse.data });
+        dispatch({ type: ACTIONS.SET_PHOTOS, params: photosResponse.data });
       })
-      .catch((error) => {
-        console.error(`Error fetching photos for topic ${topicId}:`, error);
-      });
-  }, []);
+      .catch(error => console.log(error.message));
+  }, [topicId]);
+  
 
-  const fetchSimilarPhotos = useCallback((photoId) => {
-    axios.get(`/api/photos/similar/${photoId}`)
-      .then((response) => {
-        dispatch({ type: ACTIONS.SET_SIMILAR_PHOTOS, payload: response.data });
-      })
-      .catch((error) => {
-        console.error(`Error fetching similar photos for photo ${photoId}:`, error);
-      });
-  }, []);
-// exporting states and hooks
-  return {
-    isModalOpen: state.isModalOpen,
-    favouritePhotos: state.favouritePhotos,
-    clickedPhoto: state.clickedPhoto,
-    photoData: state.photoData,
-    topicData: state.topicData,
-    fetchPhotosByTopic,
-    fetchSimilarPhotos,
-    openModal,
-    closeModal,
-    toggleFavourite
+  const onPhotoSelect = appData => {
+    if (!appData.similar_photos) {
+      const similarPhotos = state.photosArray.filter(state => state.id === appData.id)[0].similar_photos;
+      dispatch({ type: ACTIONS.SET_MODAL, params: { ...appData, 'similar_photos': similarPhotos } });
+      return;
+    }
+    dispatch({ type: ACTIONS.SET_MODAL, params: appData });
   };
+// helper functions
+  const onClosePhotoDetialsModal = () => dispatch({ type: ACTIONS.SET_MODAL, params: null });
+
+  const updateToFavPhotoIds = id => dispatch({ type: ACTIONS.FAVOURITE_PHOTO_TOGGLE, params: id });
+
+  const isFav = id => state.favourites.includes(id);
+
+  const isFavPhotoExist = state.favourites.length > 0;
+
+  const onLoadTopic = topicId => setTopicId(topicId);
+
+  return { state, onPhotoSelect, updateToFavPhotoIds, isFav, isFavPhotoExist, onLoadTopic, onClosePhotoDetialsModal };
 };
 
 export default useApplicationData;

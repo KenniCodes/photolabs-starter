@@ -1,15 +1,15 @@
 import React from "react";
 
-import TopicListItem from "./TopicListItem";
 import "../styles/TopicList.scss";
+import TopicListItem from "./TopicListItem";
 
-const TopicList = ({ topic, fetchPhotoByTopic }) => {
+
+
+const TopicList = appData => {
   return (
-    <ul className="top-nav-bar__topic-list">
-      {topic.map((sampleTopicData, index) => (
-        <TopicListItem key={sampleTopicData.id} sampleTopic={sampleTopicData} fetchPhotoByTopic={fetchPhotoByTopic}/>
-      ))}
-    </ul>
+    <div className="top-nav-bar__topic-list">
+      {appData.state.topicsArray.map(newElements => <TopicListItem key={newElements.id} {...newElements} onLoadTopic={appData.onLoadTopic}/>)}
+    </div>
   );
 };
 

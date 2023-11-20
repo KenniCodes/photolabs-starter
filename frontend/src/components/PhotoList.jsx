@@ -1,14 +1,12 @@
 import React from "react";
 
-import PhotoListItem from "./PhotoListItem";
 import "../styles/PhotoList.scss";
+import PhotoListItem from "./PhotoListItem";
 
-const PhotoList = ({ onToggleFavourite, favouritePhotos, onSelectedPhoto, photo }) => {
+const PhotoList = (appData) => {
   return (
     <ul className="photo-list">
-      {photo.map((sampleData, index) => (
-        <PhotoListItem key={sampleData.id} sample={sampleData} photoId={sampleData.id} onToggleFavourite={onToggleFavourite} isFavourite={favouritePhotos.includes(sampleData.id)} onSelectedPhoto={onSelectedPhoto} />
-      ))}
+      {appData.list.map(newElement => <li key={newElement.id}><PhotoListItem {...newElement} {...appData}/></li>)}
     </ul>
   );
 };

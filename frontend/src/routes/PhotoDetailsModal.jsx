@@ -1,38 +1,32 @@
 import React from 'react';
 
-import '../styles/PhotoDetailsModal.scss'
+import '../styles/PhotoDetailsModal.scss';
 import closeSymbol from '../assets/closeSymbol.svg';
 import PhotoFavButton from 'components/PhotoFavButton';
-import PhotoListItem from 'components/PhotoListItem';
+import PhotoList from 'components/PhotoList';
 
-const PhotoDetailsModal = ({ isOpen, closeModal, photo, onToggleFavourite, favouritePhotos, fetchSimilarPhotos }) => {
-  // if modal is already open then modal will not re-render
-  if (!isOpen) return null;
 
+const PhotoDetailsModal = appData => {
   return (
     <div className="photo-details-modal">
-      <button className="photo-details-modal__close-button" onClick={closeModal}>
+      <button className="photo-details-modal__close-button" onClick={appData.onClosePhotoDetialsModal}>
         <img src={closeSymbol} alt="close symbol" />
       </button>
-      <PhotoFavButton photoId={photo.id} onToggleFavourite={onToggleFavourite} isFavourite={favouritePhotos.includes(photo.id)} />
-      <img className='photo-details-modal__images photo-details-modal__image' src={photo.urls.full} alt="enlarged photo" />
-      <div className="photo-details-modal__photographer-details">
-        <img className='photo-details-modal__image photo-details-modal__photographer-profile' src={photo.user.profile} alt='user profile photo' />
-        <div className="photo-details-modal__photographer-info">
-          <span>
-            {photo.user.name}
-          </span>
-          <p className="photo-details-modal__photographer-location">
-            {photo.location.city}, {photo.location.country}
-          </p>
+      <div className="photo-list__item">
+        <PhotoFavButton {...appData} id={appData.state.modal.id}/>
+        <img className="photo-details-modal__image" src={appData.state.modal.urls.full}/>
+        <div className="photo-list__user-details">
+          <img className="photo-list__user-profile" src={appData.state.modal.user.profile} />
+          <div className="photo-details-modal__header">
+            <span>{appData.state.modal.user.name}</span>
+            <p className="photo-list__user-location">{`${appData.state.modal.location.city}, ${appData.state.modal.location.country}`}</p>
+          </div>
         </div>
       </div>
-      <div className="photo-details-modal__header">
-        <h2>Similar Photos</h2>
-      <PhotoListItem key={photo.id} sample={photo} photoId={photo.id} onToggleFavourite={onToggleFavourite} isFavourite={favouritePhotos.includes(photo.id)} />
-      </div>
+      <header className='photo-details-modal__header'>Similar Photos</header>
+      <PhotoList list={appData.state.modal.similar_photos} {...appData}/>
     </div>
-  )
+  );
 };
 
 export default PhotoDetailsModal;
